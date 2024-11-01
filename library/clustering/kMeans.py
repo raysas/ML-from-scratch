@@ -34,6 +34,7 @@ The temp distance matrix at each iteration will be stored in a matrix of shape (
 
 from datetime import datetime
 import os
+from IPython.display import display
 from ..utils.helper import *
 import numpy as np  
 import pandas as pd
@@ -96,6 +97,12 @@ class kMeans:
         self.__k = k
         self.__distance = distance
         self.__max_iter = max_iter
+        self.__clusters = []
+
+    def __str__(self):
+        return f'K-means clustering model with {self.__k} clusters'
+    def __repr__(self):
+        return f'kMeans(data={self.__data}, k={self.__k}, distance={self.__distance}, max_iter={self.__max_iter})'
 
     def __setattr__(self, name: str, value: Any) -> None:
         if name == '_kMeans__data':
@@ -116,6 +123,56 @@ class kMeans:
                 raise ValueError('The maximum number of iterations should be an integer')
 
         self.__dict__[name] = value
+
+    @property
+    def data(self):
+        return self.__data
+    @data.setter
+    def data(self, value):
+        self.__data = value
+    @data.deleter
+    def data(self):
+        del self.__data
+    
+    @property
+    def k(self):
+        return self.__k
+    @k.setter
+    def k(self, value):
+        self.__k = value
+    @k.deleter
+    def k(self):
+        del self.__k
+    
+    @property
+    def distance(self):
+        return self.__distance
+    @distance.setter
+    def distance(self, value):
+        self.__distance = value
+    @distance.deleter
+    def distance(self):
+        del self.__distance
+
+    @property
+    def max_iter(self):
+        return self.__max_iter
+    @max_iter.setter
+    def max_iter(self, value):
+        self.__max_iter = value
+    @max_iter.deleter
+    def max_iter(self):
+        del self.__max_iter
+
+    @property
+    def clusters(self):
+        return self.__clusters
+    @clusters.setter
+    def clusters(self, value):
+        self.__clusters = value
+    @clusters.deleter
+    def clusters(self):
+        del self.__clusters
 
     def assign_means(self, seed=42):
         '''
@@ -148,14 +205,14 @@ class kMeans:
         # means=[M1,M2]
 
         # --
-        data=self.__data
+        df=self.__data
         k=self.__k
         distance=self.__distance
         max_iter=self.__max_iter
 
         if verbose:
             print(f'Dataset:')
-            display(self.__data)
+            display(df)
 
         means = self.assign_means(seed)
 
