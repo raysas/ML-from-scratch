@@ -4,10 +4,24 @@ This repository contains implementations of various machine learning algorithms 
 
 ## Unsupervised Learning
 
-This consists of algorithms that do not require labeled data. The main task here is _clustering_.  
-Clustering is about grouping similar data points together. Similarity is a complex function that can be defined as the opposite of distance. The conditions for a good similarity function:  
-1. _Reflexivity_: `similarity(x, x) = 1`  
-2. _Symmetry_: `similarity(x, y) = similarity(y, x)`  
+This consists of algorithms that do not require labeled data. The main task here is ___clustering___.  
+Clustering is about grouping "_similar_" data points together in clusters.  
+Similarity is a complex function that can be thought of as the inverse of distance. In fact, dissimilarity is a more general definition of distance, where $\not \exist$ $triangular\ inequality$.
+The conditions for a good similarity function $f(x)$:  
+1. _Non-negativity_: $f(x,y)\ge 0$
+2. _Symmetry_: $f(x, y) = f(y, x)$ 
+3. _Reflexivity_: $f(x,x)=f(y,y)=M \ge f(x,y)$ (equal when $x=y$) where $M$ is the max value  
+
+Inverse of the distance, i.e. the more distant $\iff$ the less similar.  
+- $d \in [0, +\infty[$  
+- $s \in [0, M]$  
+- $s(x,y)=f(d(x,y))$; these would work:  
+    - $s(x,y)=\frac{1}{d(x,y)+\frac{1}{M}}$  
+    - $s(x,y)=\frac{M}{d(x,y)+1}$  
+In _ML_, a known function is the $Gaussian\ similarity:$  
+$s(x,y)=e^{-\gamma d^2(x,y)} \in ]0,1]$, where $\gamma$ is a scalar.
+
+![dissimilarity](./assets/distance.png)
 
 ### K-Means Clustering
 

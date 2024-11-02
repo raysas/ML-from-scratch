@@ -1,35 +1,8 @@
 '''
-------------------------------------
 K-means clustering algorithm
-------------------------------------
-This function computes the K-means algorithm to cluster the data into k clusters with random initializtion of means.  
-The distance function used here will be the manhattan distance
-Note that this is a non parametric clustering approach, it has a limitation taht the number of cluster has to be predefined, finding the right number of K is an open problem, in practice we apply some heuristics to get an optimal number of clusters.
 
-### The idea behind this algorithm:
-
-1. randomly assign all points in random clusters, this is initially set by random initilization of means for each cluster, here by randomly choosing any k points as means 
-2. compute the distances between each data point and the means, each data point will be assigned to the cluster that it's closer to. 
-3. recompute teh means based on the new values in each cluster
-4. iterate from step 2 and repeat until convergence
-
-The temp distance matrix at each iteration will be stored in a matrix of shape (n, k) where n is the number of data points and k is the number of clusters of this form:
-
-| | cluster1_mean | cluster2_mean | ... | clusterk_mean |
-|-|---------------|---------------|-----|---------------|
-|point1| distance1 | distance2 | ... | distancek |
-|...|...|...|...|...|
-|pointn| distance1 | distance2 | ... | distancek |
-
-### Parameters:
-
-- data (np.ndarray): data points, each point has an x and y coordinates
-- k (int): number of clusters 
-
-### Return:
-
-- clusters (list): a list of clusters, each cluster is a list of points in the cluster
-
+This module contains the implementation of the K-means clustering algorithm.  
+The algorithm is implemented in the class kMeans, which is a subclass of the Clustering class.
 '''
 
 from datetime import datetime
@@ -184,8 +157,8 @@ class kMeans:
         indices= np.random.choice(range(len(self.__data)), size=self.__k, replace=False) #avoids dups
         for _ in range(k):
             mu=[]
-            for __ in range(data.shape[1]):
-                mu.append(float(data[indices[_], __])) #fixes the freakinggggggggg format
+            for __ in range(self.__data.shape[1]):
+                mu.append(float(self.__data[indices[_], __])) #fixes the freakinggggggggg format
             means.append(mu)
         return means
     
