@@ -1,13 +1,18 @@
 # Machine Learning from scratch
 
 This repository contains implementations of various machine learning algorithms from scratch. The purpose of this repository is to go through the algorithms and practice implementing them in Python. The algorithms are implemented in an object-oriented manner, and the code is well-documented (eventually).  
-These will include:  
+These will include (but def not limited to):  
 - Unsupervised Learning (clustering):  
     - K-means clustering   
     - Hierarchical clustering  
     - Spectral clustering  
 - Supervised Learning:  
     - Decision Trees  
+
+Machine Learning is subset of numerical AI revolving around the idea of "learning from data". It optimizes a performance criterion using past data or experience.  
+Learning is 2-fold:  
+- optimization (training): finding the best model parameters, to make it perform well on the data we have  
+- generalization (testing): to make it work on unseen data  
 
 ## Unsupervised Learning
 
