@@ -1,6 +1,6 @@
 # ML-from-scratch
 
-This repository contains implementations of various machine learning algorithms from scratch. The purpose of this repository is to go through the algorithms and practice implementing them in Python. The algorithms are implemented in an object-oriented manner, and the code is well-documented (eventually).  
+This repository contains implementations of various machine learning algorithms from scratch. The purpose of this repository is to go through the algorithms and practice implementing them in Python. The algorithms are implemented in an object-oriented manner, and the code is well-documented (eventually). 
 
 ## Unsupervised Learning
 
@@ -49,22 +49,50 @@ When merging clusters, we need to define a _linkage criterion_ to determine the 
 4. _Centroid linkage_: The distance between two clusters is the distance between the centroids of the clusters.  
 
 ### Spectral Clustering
+ 
+_What's the motivation behind?_  
+Unlike approaches like k-means, spectral clustering works well on non-convex clusters and can capture complex structures in the data. 
+![spectral vs kmeans](./assets/spectral%20(3).png)
+By definition, in a convex set, if we draw a line between any two points in the set, the line should be entirely within the set. Elements on the line are still on cluster. If it's not convex, elements on the lien dont belong to the same cluster.  
+![convex vs non-convex](./assets/spectral%20(2).png)
 
-Spectral clustering is a clustering algorithm that has advantages over traditional clustering algorithms like K-means, especially when the clusters are non-convex or have complex shapes.  
-It is based on the _spectral graph theory_, which studies the properties of graphs in relation to the eigenvalues and eigenvectors of the graph's adjacency matrix. This approach eventually leads to a _low-dimensional embedding_ of the data, constructed from the eigenvectors of the graph Laplacian matrix which is the solution to the _normalized cut_ problem, a variant of the _max flow/min cut_ NP-hard problem.
-Then the data points are clustered in this low-dimensional space using a clustering algorithm like K-means.
+That's why we're studying _spectral clustering_ which is based _spectral graph theory_: the properties of graphs in relation to the eigenvalues and eigenvectors of the graph's adjacency matrix.  
+But, _how to get a graph from tabular data?_  
+The data points are represented as vertices in a graph, and the edges between the vertices are weighted based on the similarity between the data points.
 
-_Some linear/graph theory background because it's cool_: 
-A Graph $G=(V, E)$ is a set of vertices $V$ and edges $E$ connecting the vertices. 
+_Some linear/graph theory background because it's cool_:  
+A Graph $G=(V, E)$ is a set of vertices $V$ and edges $E$ connecting the vertices, it's a non-euclidean data structure _(example of euclidean is tabular data, it obeys euclidean postulates and can be represented in multi-dimensional linear space)._ 
 There are 3 types of matrices when it comes to representing them, the most common being:  
 - _adjacency matrix_ $A$ which is a square matrix of size $|V| \times |V|$ where $A_{ij} = w_{ij}$ if there is an edge between vertices $i$ and $j$, and $0$ otherwise. The _degree matrix_ $D$, on the side, is a diagonal matrix of size $|V| \times |V|$ where $D_{ii} = \sum_{j} A_{ij}$, i.e. the sum of the weights of the edges incident to vertex $i$, and this can be calculated as $D = \sum_{i} A$.   
 - _incidence matrix_ $B$ which is a matrix of size $|V| \times |E|$ where $B_{ij} = 1$ if vertex $i$ is incident to edge $j$, $-1$ if it is the other end of the edge, and $0$ otherwise (each column has 2 non-zero entries, one +1 and one -1).  
-- _Laplacian matrix_ $L$ which is a matrix of size $|V| \times |V|$ where $L = D - A$. The Laplacian matrix has some interesting properties, for example, the sum of the elements in each row/column is zero, and the smallest eigenvalue is zero with the corresponding eigenvector being the all-ones vector. It is also symmetric and positive semi-definite.  
+- _Laplacian matrix_ $L$ which is a matrix of size $|V| \times |V|$ where $L = D - A$. It is symmetric and semi-positive definite, and has has some interesting properties, the eigenvalues and eigenvectors provide some insights into teh connectivity of the graph.  
+The sum of the elements in each row/column is zero, and the smallest eigenvalue is zero with the corresponding eigenvector being the all-ones vector (# of 0 eigenvalues = # of connected components in the graph).   
+The eigenvectors are all $\in \mathbb{R}$ and orthogonal (because $L$ is $sym$). 
+It's very good for clustering, used to solve the _normalized cut_ problem, which is a relaxation of the _min cut_ NP-complete problem. 
 
-With this we can define the _normalized Laplacian matrix_ $L_{norm} = D^{-1/2} L D^{-1/2}$ which is used in spectral clustering. The Laplacian matrix is normalized by the degree matrix to make it scale-invariant. According to Fiedler's theorem, the second smallest eigenvalue of the normalized Laplacian matrix corresponds to the optimal cut of the graph.
+**Definition:**  
+Given a graph $G=(V, E)$, the minimum cut problem is to partition the vertices into two sets $A$ and $B$ such that the number of edges between the two sets is minimized. 
+$Cut(A, B) = \sum_{i \in A, j \in B} w_{ij}$  
+The purpose of clustering is to maximize the distance between the clusters and minimize the distance within the clusters. Thus the min cut problem $\iff$ clustering. 
+
+According to Reyleigh's theorem, the second smallest eigenvalue of the normalized Laplacian matrix corresponds to the optimal cut of the graph, the eigenvector corresponding to this eigenvalue gives the partition of the graph into two clusters, also called the _Fiedler vector_.
 
 
+Here in biclustering, the output will be the assignment vector $p$ of size $|V|$ where $p_i = 1$ if vertex $i$ is in cluster 1, and $p_i = -1$ if vertex $i$ is in cluster 2.  
+Min-cut is relaxed via the assignment vector $\implies$ $p_i \in \mathbb{R}$ (not discrete, _hence the normalized cut_).  
+Then using Rayleigh's theorem, the eigenvector corresponding to teh 2nd smallest $\lambda$ corresponds to the assignment vector, we can then split the values at 0 & apply k-means on this eigenvector.  
+In practice, to do k-clustering, we take the first $k$ eigenvectors of the Laplacian matrix, and apply k-means on the resulting matrix.
 
-The algorithm works as follows:  
-```text
-```
+![fiedler vector](./assets/spectral%20(4).png)
+
+
+This approach eventually leads to a _low-dimensional embedding_ of the data, constructed from the eigenvectors of the graph Laplacian matrix which is the solution to the _normalized cut_ problem, a relaxed version of the _max flow/min cut_ NP-hard problem in graph theory.  
+_Minmum cut problem_: 
+Then the data points are clustered in this low-dimensional space using a clustering algorithm like K-means.
+
+
+The algorithm for _Normalized Spectral Clustering_ (by Ng, Jordan, and Weiss):
+
+
+Visualizations drawn with <a href='figma.com'><img src='./assets/figma.png' width=15 length=10 alt=figma >  </a>  
+Licensed by the [MIT License](./LICENSE.md).  
