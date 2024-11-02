@@ -1,6 +1,13 @@
-# ML-from-scratch
+# Machine Learning from scratch
 
-This repository contains implementations of various machine learning algorithms from scratch. The purpose of this repository is to go through the algorithms and practice implementing them in Python. The algorithms are implemented in an object-oriented manner, and the code is well-documented (eventually). 
+This repository contains implementations of various machine learning algorithms from scratch. The purpose of this repository is to go through the algorithms and practice implementing them in Python. The algorithms are implemented in an object-oriented manner, and the code is well-documented (eventually).  
+These will include:  
+- Unsupervised Learning (clustering):  
+    - K-means clustering   
+    - Hierarchical clustering  
+    - Spectral clustering  
+- Supervised Learning:  
+    - Decision Trees  
 
 ## Unsupervised Learning
 
@@ -58,9 +65,9 @@ By definition, in a convex set, if we draw a line between any two points in the 
 
 That's why we're studying _spectral clustering_ which is based _spectral graph theory_: the properties of graphs in relation to the eigenvalues and eigenvectors of the graph's adjacency matrix.  
 But, _how to get a graph from tabular data?_  
-The data points are represented as vertices in a graph, and the edges between the vertices are weighted based on the similarity between the data points.
+The data points are represented as vertices in a graph, and the edges between the vertices are weighted based on the similarity between the data points. The graph is a _weighted similarity graph_, which is complete. To sparsify it, a way would be to delete edges with low weights, below a certain threshold $\epsilon$, generating thus an _epsilon-graph_.
 
-_Some linear/graph theory background because it's cool_:  
+_Some linear algebra/graph theory background because it's cool_:  
 A Graph $G=(V, E)$ is a set of vertices $V$ and edges $E$ connecting the vertices, it's a non-euclidean data structure _(example of euclidean is tabular data, it obeys euclidean postulates and can be represented in multi-dimensional linear space)._ 
 There are 3 types of matrices when it comes to representing them, the most common being:  
 - _adjacency matrix_ $A$ which is a square matrix of size $|V| \times |V|$ where $A_{ij} = w_{ij}$ if there is an edge between vertices $i$ and $j$, and $0$ otherwise. The _degree matrix_ $D$, on the side, is a diagonal matrix of size $|V| \times |V|$ where $D_{ii} = \sum_{j} A_{ij}$, i.e. the sum of the weights of the edges incident to vertex $i$, and this can be calculated as $D = \sum_{i} A$.   
@@ -88,9 +95,7 @@ In practice, to do k-clustering, we take the first $k$ eigenvectors of the Lapla
 ![fiedler vector](./assets/spectral%20(4).png)
 
 
-This approach eventually leads to a _low-dimensional embedding_ of the data, constructed from the eigenvectors of the graph Laplacian matrix which is the solution to the _normalized cut_ problem, a relaxed version of the _max flow/min cut_ NP-hard problem in graph theory.  
-_Minmum cut problem_: 
-Then the data points are clustered in this low-dimensional space using a clustering algorithm like K-means.
+This approach eventually leads to a _low-dimensional embedding_ of the data, constructed from the eigenvectors of the graph Laplacian matrix.
 
 
 The algorithm for _Normalized Spectral Clustering_ (by Ng, Jordan, and Weiss):
