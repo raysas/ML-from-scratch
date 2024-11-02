@@ -75,6 +75,8 @@ Given a graph $G=(V, E)$, the minimum cut problem is to partition the vertices i
 $Cut(A, B) = \sum_{i \in A, j \in B} w_{ij}$  
 The purpose of clustering is to maximize the distance between the clusters and minimize the distance within the clusters. Thus the min cut problem $\iff$ clustering. 
 
+![min cut](./assets/spectral%20(6).png)
+
 According to Reyleigh's theorem, the second smallest eigenvalue of the normalized Laplacian matrix corresponds to the optimal cut of the graph, the eigenvector corresponding to this eigenvalue gives the partition of the graph into two clusters, also called the _Fiedler vector_.
 
 
