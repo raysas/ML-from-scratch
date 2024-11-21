@@ -140,18 +140,21 @@ Unlike approaches like k-means, spectral clustering works well on non-convex clu
 By definition, in a convex set, if we draw a line between any two points in the set, the line should be entirely within the set. Elements on the line are still on cluster. If it's not convex, elements on the lien dont belong to the same cluster.  
 ![convex vs non-convex](./assets/spectral%20(2).png)
 
-That's why we're studying _spectral clustering_ which is based _spectral graph theory_: the properties of graphs in relation to the eigenvalues and eigenvectors of the graph's adjacency matrix.  
+That's why we're studying _spectral clustering_ which is based _spectral graph theory_: the properties of graphs in relation to the eigenvalues and eigenvectors of the graph's adjacency matrix. Actually, a _spectrum_ is the set of eigenvectors ordered by increasing eigenvalues of a matrix $\Lambda = \{\lambda_1, \lambda_2, ..., \lambda_n\}$ (not quite sure, formal defintion says set of eigenvalues)
+
 But, _how to get a graph from tabular data?_  
-The data points are represented as vertices in a graph, and the edges between the vertices are weighted based on the similarity between the data points. The graph is a _weighted similarity graph_, which is complete. To sparsify it, a way would be to delete edges with low weights, below a certain threshold $\epsilon$, generating thus an _epsilon-graph_.
+The data points are represented as vertices in a graph, and the edges between the vertices are weighted based on the similarity between the data points. The graph is a _weighted similarity graph_, which is complete. To sparsify it we would need to consider some strategies to delete edges (check below)
 
 _Some linear algebra/graph theory background because it's cool_:  
-A Graph $G=(V, E)$ is a set of vertices $V$ and edges $E$ connecting the vertices, it's a non-euclidean data structure _(example of euclidean is tabular data, it obeys euclidean postulates and can be represented in multi-dimensional linear space)._ 
+a graph $G=(V, E)$ is a set of vertices $V$ and edges $E$ connecting the vertices, it's a non-euclidean data structure _(example of euclidean is tabular data, it obeys euclidean postulates and can be represented in multi-dimensional linear space)._ 
 There are 3 types of matrices when it comes to representing them, the most common being:  
 - _adjacency matrix_ $A$ which is a square matrix of size $|V| \times |V|$ where $A_{ij} = w_{ij}$ if there is an edge between vertices $i$ and $j$, and $0$ otherwise. The _degree matrix_ $D$, on the side, is a diagonal matrix of size $|V| \times |V|$ where $D_{ii} = \sum_{j} A_{ij}$, i.e. the sum of the weights of the edges incident to vertex $i$, and this can be calculated as $D = \sum_{i} A$.   
 - _incidence matrix_ $B$ which is a matrix of size $|V| \times |E|$ where $B_{ij} = 1$ if vertex $i$ is incident to edge $j$, $-1$ if it is the other end of the edge, and $0$ otherwise (each column has 2 non-zero entries, one +1 and one -1).  
-- _Laplacian matrix_ $L$ which is a matrix of size $|V| \times |V|$ where $L = D - A$. It is symmetric and semi-positive definite, and has has some interesting properties, the eigenvalues and eigenvectors provide some insights into the connectivity of the graph.  
-The sum of the elements in each row/column is zero, and the smallest eigenvalue is zero with the corresponding eigenvector being the all-ones vector (# of 0 eigenvalues = # of connected components in the graph).   
-The eigenvectors are all $\in \mathbb{R}$ and orthogonal (because $L$ is $sym$). 
+- _Laplacian matrix_ $L$ which is a matrix of size $|V| \times |V|$ where $L = D - A = B^TB$ (when undirected). It is symmetric and semi-positive definite (also when A is symmetric), and has has some interesting properties, the eigenvalues and eigenvectors provide some insights into the connectivity of the graph.   
+The sum of the elements in each row/column is zero, and the smallest eigenvalue is zero with the corresponding eigenvector being the all-ones vector (# of 0 eigenvalues = # of connected components in the graph): $0 = \lambda_1 \le \lambda_2 \le ... \le \lambda_n \le \Delta$ where $\Delta$ is the largest degree in the graph, eigenvectors are all $\in \mathbb{R}$ and orthogonal (because $L$ is $sym$).  
+The _normalized Laplacian matrix_ $L_{norm}$ is defined as $L_{norm} = D^{-\frac{1}{2}}LD^{-\frac{1}{2}}= I - A_{norm}$ where $D^{-\frac{1}{2}} = \sqrt{D^{-1}}$, so $D^{-\frac{1}{2}}_{ii}= \frac{1}{\sqrt{D_{ii}}}=\frac{1}{\sqrt{degree_i}}$ (from $A_{norm} = D^\frac{-1}{2}AD^\frac{-1}{2}$); diagonal elements now are 1 and $0 \le \lambda_i \le 2$. 
+
+
 It's very good for clustering, used to solve the _normalized cut_ problem, which is a relaxation of the _min cut_ NP-complete problem. 
 
 **Definition:**  
@@ -165,17 +168,45 @@ According to Reyleigh's theorem, the second smallest eigenvalue of the normalize
 
 
 Here in biclustering, the output will be the assignment vector $p$ of size $|V|$ where $p_i = 1$ if vertex $i$ is in cluster 1, and $p_i = -1$ if vertex $i$ is in cluster 2.  
-Min-cut is relaxed via the assignment vector $\implies$ $p_i \in \mathbb{R}$ (not discrete, _hence the normalized cut_).  
-Then using Rayleigh's theorem, the eigenvector corresponding to the 2nd smallest $\lambda$ corresponds to the assignment vector, we can then split the values at 0 & apply k-means on this eigenvector.  
-In practice, to do k-clustering, we take the first $k$ eigenvectors of the Laplacian matrix, and apply k-means on the resulting matrix.
+Min-cut is relaxed via the assignment vector $\implies$ $p_i \in \mathbb{R}$ (not discrete, _hence the normalized cut_):  
+$min Ncut(A, B) = \frac{Cut(A, B)}{vol(A)} + \frac{Cut(A, B)}{vol(B)}$  
+where $vol(A) = \sum_{i \in A} degree_i$ is the volume of the set $A$ (total weight of edges originating from vertices in $A$)  
+So the aim is to find a function $f(p)=\sum_{i,j} w_{ij} (p_i - p_j)^2=p^TLp$ that finds the optimal assignment vector $p$ that minimizes the normalized cut.
+
+Then using Rayleigh's theorem, the eigenvector corresponding to the 2nd smallest eigenvalue $\lambda_2$ corresponds to the assignment vector, we can then split the values at 0 or apply k-means on this eigenvector(?)  
+
 
 ![fiedler vector](./assets/spectral%20(4).png)
+
+In practice, to do k-clustering, we either:  
+1. perform bi-clustering recursively (not stable)  
+2. take the first $k$ eigenvectors of the Laplacian matrix, and apply k-means on the resulting $n \times k$ matrix (each eigenvector is a feature in the new space).  
 
 
 This approach eventually leads to a _low-dimensional embedding_ of the data, constructed from the eigenvectors of the graph Laplacian matrix.
 
 
-The algorithm for _Normalized Spectral Clustering_ (by Ng, Jordan, and Weiss):
+The pseudocode for spectral clustering:  
+1. similarity graph $G=(V, E)$ from the data points $X$  
+2. compute the normalized Laplacian matrix $L_{norm}$  
+3. compute the first $k$ eigenvectors of $L_{norm}$  
+4. form the matrix $U \in \mathbb{R}^{n \times k}$ with the eigenvectors as columns  
+5. apply k-means to the rows of $U$ to get the clusters  
+
+
+
+
+
+**Important notes:**  
+
+_how to choose k?_  
+The eigengap heuristic: plot the eigenvalues and look for a "gap" between the $k$-th and $(k+1)$-th eigenvalues. The value of $k$ is chosen where the gap is the largest.  
+
+_how to sparsify the graph?_  
+- the $\epsilon$-graph: keep only the edges with weights above a certain threshold $\epsilon$.  
+- the $k$-nearest neighbors graph: keep only the $k$ nearest neighbors of each vertex (based on the weights, which represent the similarity between the data points..)  
+- mutual $k$-NN graph: keep only the edges that are mutual, i.e., if $x_i$ is among the $k$ nearest neighbors of $x_j$, and $x_j$ is among the $k$ nearest neighbors of $x_i$
+
 
 
 Visualizations drawn with <a href='figma.com'><img src='./assets/figma.png' width=15 length=10 alt=figma >  </a>  
