@@ -159,9 +159,8 @@ The _normalized Laplacian matrix_ $L_{norm}$ is defined as
 $L_{norm} = D^{-\frac{1}{2}}LD^{-\frac{1}{2}}= I - A_{norm}$
 where   
 $D^{-\frac{1}{2}} = \sqrt{D^{-1}}$ , so 
-$D^{-\frac{1}{2}}_{ii} =$ 
-$\frac{1}{\sqrt{D}_{ii} }=$  
-$\frac{1}{\sqrt{degree_i}}$  
+$D^{-\frac{1}{2}}_{ii}=$ 
+$\frac{1}{\sqrt{D}_{ii}}=$  $\frac{1}{\sqrt{degree_i}}$  
 (from $A_{norm} = D^\frac{-1}{2}AD^\frac{-1}{2}$)  
 $L_{norm_{ii}}=1$ and $0 \le \lambda_i \le 2$. 
 
