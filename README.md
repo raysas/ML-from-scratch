@@ -28,7 +28,7 @@ where $\mu_i$ is the centroid of cluster $C_i$.
 Overall minimizing the distance within the clusters and maximizing the distance between the clusters.  
 
 In other words, clustering is about grouping "_similar_" data points together in clusters.  
-Similarity is a complex function that can be thought of as the inverse of distance. In fact, dissimilarity is a more general definition of distance, where $\not \exist$ $triangular\ inequality$.
+Similarity is a complex function that can be thought of as the inverse of distance. In fact, dissimilarity is a more general definition of distance, where $$\not \exist \ triangular\ inequality$$.
 The conditions for a good similarity function $f(x)$:  
 1. _Non-negativity_: $f(x,y)\ge 0$
 2. _Symmetry_: $f(x, y) = f(y, x)$ 
@@ -119,7 +119,7 @@ We need to define a _linkage criterion_ to determine the distance between cluste
 
 | Name              | Definition                                                                 |$d(C_i, C_j) =$                                                                 | Advantages                                      | Disadvantages                                                                 |
 |-------------------|-----------------------------------------------------------------------------|---------------------------------------------------------------------------------------|------------------------------------------------|-------------------------------------------------------------------------------|
-| Single linkage    | The distance between two clusters is the distance between the two closest points in the clusters. | $ \min_{x_i \in C_i, x_j \in C_j} d(x_i, x_j)$                           | + Non-elliptical shapes                         | - Sensitive to noise/outliers, - Long/elongated clusters                      |
+| Single linkage    | The distance between two clusters is the distance between the two closest points in the clusters. | $\min_{x_i \in C_i, x_j \in C_j} d(x_i, x_j)$                           | + Non-elliptical shapes                         | - Sensitive to noise/outliers, - Long/elongated clusters                      |
 | Complete linkage  | The distance between two clusters is the distance between the two farthest points in the clusters. | $\max_{x_i \in C_i, x_j \in C_j} d(x_i, x_j)$                           | + Less sensitive to noise, + More balanced clusters (= diameter)              | - Breaks large clusters, - Clusters tend to have the same diameter (small ones are merged with large ones) |
 | Average linkage   | The distance between two clusters is the average distance between all pairs of points in the clusters. | $\frac{1}{\|C_i\|\|C_j\|} \sum_{x_i \in C_i, x_j \in C_j} d(x_i, x_j)$       | + Compromise between single and complete, + Less sensitive to noise            | - Biased to globular clusters                                                 |
 
@@ -148,11 +148,20 @@ The data points are represented as vertices in a graph, and the edges between th
 _Some linear algebra/graph theory background because it's cool_:  
 a graph $G=(V, E)$ is a set of vertices $V$ and edges $E$ connecting the vertices, it's a non-euclidean data structure _(example of euclidean is tabular data, it obeys euclidean postulates and can be represented in multi-dimensional linear space)._ 
 There are 3 types of matrices when it comes to representing them, the most common being:  
-- _adjacency matrix_ $A$ which is a square matrix of size $|V| \times |V|$ where $A_{ij} = w_{ij}$ if there is an edge between vertices $i$ and $j$, and $0$ otherwise. The _degree matrix_ $D$, on the side, is a diagonal matrix of size $|V| \times |V|$ where $D_{ii} = \sum_{j} A_{ij}$, i.e. the sum of the weights of the edges incident to vertex $i$, and this can be calculated as $D = \sum_{i} A$.   
-- _incidence matrix_ $B$ which is a matrix of size $|V| \times |E|$ where $B_{ij} = 1$ if vertex $i$ is incident to edge $j$, $-1$ if it is the other end of the edge, and $0$ otherwise (each column has 2 non-zero entries, one +1 and one -1).  
-- _Laplacian matrix_ $L$ which is a matrix of size $|V| \times |V|$ where $L = D - A = B^TB$ (when undirected). It is symmetric and semi-positive definite (also when A is symmetric), and has has some interesting properties, the eigenvalues and eigenvectors provide some insights into the connectivity of the graph.   
+- _adjacency matrix_ $A$ which is a square matrix of size $|V| \times |V|$ where   
+$A_{ij} = w_{ij}$ if there is an edge between vertices $i$ and $j$, and $0$ otherwise. The _degree matrix_ $D$, on the side, is a diagonal matrix of size $|V| \times |V|$ where $D_{ii} = \sum_{j} A_{ij}$, i.e. the sum of the weights of the edges incident to vertex $i$, and this can be calculated as $D = \sum_{i} A$.   
+- _incidence matrix_ $B$ which is a matrix of size $|V| \times |E|$ where   
+$B_{ij} = 1$ if vertex $i$ is incident to edge $j$, $-1$ if it is the other end of the edge, and $0$ otherwise (each column has 2 non-zero entries, one +1 and one -1).  
+- _Laplacian matrix_ $L$ which is a matrix of size $|V| \times |V|$ where   
+$L = D - A = B^TB$ (when undirected). It is symmetric and semi-positive definite (also when A is symmetric), and has has some interesting properties, the eigenvalues and eigenvectors provide some insights into the connectivity of the graph.   
 The sum of the elements in each row/column is zero, and the smallest eigenvalue is zero with the corresponding eigenvector being the all-ones vector (# of 0 eigenvalues = # of connected components in the graph): $0 = \lambda_1 \le \lambda_2 \le ... \le \lambda_n \le \Delta$ where $\Delta$ is the largest degree in the graph, eigenvectors are all $\in \mathbb{R}$ and orthogonal (because $L$ is $sym$).  
-The _normalized Laplacian matrix_ $L_{norm}$ is defined as $L_{norm} = D^{-\frac{1}{2}}LD^{-\frac{1}{2}}= I - A_{norm}$ where $D^{-\frac{1}{2}} = \sqrt{D^{-1}}$, so $D^{-\frac{1}{2}}_{ii}= \frac{1}{\sqrt{D_{ii}}}=\frac{1}{\sqrt{degree_i}}$ (from $A_{norm} = D^\frac{-1}{2}AD^\frac{-1}{2}$); diagonal elements now are 1 and $0 \le \lambda_i \le 2$. 
+The _normalized Laplacian matrix_ $L_{norm}$ is defined as   
+$L_{norm} = D^{-\frac{1}{2}}LD^{-\frac{1}{2}}= I - A_{norm}$
+where   
+$D^{-\frac{1}{2}} = \sqrt{D^{-1}}$ , so 
+$D^{-\frac{1}{2}}_{ii}= \frac{1}{\sqrt{D_{ii}}}= \frac{1}{\sqrt{degree_i}}$  
+(from $A_{norm} = D^\frac{-1}{2}AD^\frac{-1}{2}$)  
+$L_{norm_{ii}}=1$ and $0 \le \lambda_i \le 2$. 
 
 
 It's very good for clustering, used to solve the _normalized cut_ problem, which is a relaxation of the _min cut_ NP-complete problem. 
