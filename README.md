@@ -28,7 +28,7 @@ where $\mu_i$ is the centroid of cluster $C_i$.
 Overall minimizing the distance within the clusters and maximizing the distance between the clusters.  
 
 In other words, clustering is about grouping "_similar_" data points together in clusters.  
-Similarity is a complex function that can be thought of as the inverse of distance. In fact, dissimilarity is a more general definition of distance, where $$\not \exist \ triangular\ inequality$$.
+Similarity is a complex function that can be thought of as the inverse of distance. In fact, dissimilarity is a more general definition of distance, where $\not\exist \ triangular\ inequality$.
 The conditions for a good similarity function $f(x)$:  
 1. _Non-negativity_: $f(x,y)\ge 0$
 2. _Symmetry_: $f(x, y) = f(y, x)$ 
@@ -49,7 +49,7 @@ In _ML_, a known function is the _Gaussian similarity_ function;
 
 
 Other known distance functions for vectors whose values $\in \mathbb{R} (can be weighted), different for boolean, categorical, or ordinal data:   
-- _Mikowski distance*_: $d(x,y)=\left(\sum_{i=1}^{n}|x_i-y_i|^p\right)^{\frac{1}{p}}$, also called $L_p$ norm  (p=1, Manhattan; p=2, Euclidean; p=$\infty$, Chebyshev)       
+- _Mikowski distance*_: $d(x,y)=\left(\sum_{i=1}^{n}|x_i-y_i|^p\right)^{\frac{1}{p}}$, also called $L_p$ norm  (p=1, Manhattan; p=2, Euclidean; p= $\infty$ , Chebyshev)       
 - _Euclidean distance_: $d(x,y)=\sqrt{\sum_{i=1}^{n}(x_i-y_i)^2}$ ($L_2$ norm)  
 - _Manhattan distance_: $d(x,y)=\sum_{i=1}^{n}|x_i-y_i|$ ($L_1$ norm)  
 
