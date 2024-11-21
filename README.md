@@ -28,7 +28,7 @@ where $\mu_i$ is the centroid of cluster $C_i$.
 Overall minimizing the distance within the clusters and maximizing the distance between the clusters.  
 
 In other words, clustering is about grouping "_similar_" data points together in clusters.  
-Similarity is a complex function that can be thought of as the inverse of distance. In fact, dissimilarity is a more general definition of distance, where $\not\exist \ triangular\ inequality$.
+Similarity is a complex function that can be thought of as the inverse of distance. In fact, dissimilarity is a more general definition of distance, where $\exist \ triangular\ inequality$.
 The conditions for a good similarity function $f(x)$:  
 1. _Non-negativity_: $f(x,y)\ge 0$
 2. _Symmetry_: $f(x, y) = f(y, x)$ 
@@ -159,7 +159,7 @@ The _normalized Laplacian matrix_ $L_{norm}$ is defined as
 $L_{norm} = D^{-\frac{1}{2}}LD^{-\frac{1}{2}}= I - A_{norm}$
 where   
 $D^{-\frac{1}{2}} = \sqrt{D^{-1}}$ , so 
-$D^{-\frac{1}{2}}_{ii}= \frac{1}{\sqrt{D_{ii}}}= \frac{1}{\sqrt{degree_i}}$  
+$D^{-\frac{1}{2}}_{ii}=$ $\frac{1}{\sqrt{D_{ii}}}=$  $\frac{1}{\sqrt{degree_i}}$  
 (from $A_{norm} = D^\frac{-1}{2}AD^\frac{-1}{2}$)  
 $L_{norm_{ii}}=1$ and $0 \le \lambda_i \le 2$. 
 
