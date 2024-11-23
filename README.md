@@ -183,6 +183,9 @@ $min Ncut(A, B) = \frac{Cut(A, B)}{vol(A)} + \frac{Cut(A, B)}{vol(B)}$
 where $vol(A) = \sum_{i \in A} degree_i$ is the volume of the set $A$ (total weight of edges originating from vertices in $A$)  
 So the aim is to find a function $f(p)=\sum_{i,j} w_{ij} (p_i - p_j)^2=p^TLp$ that finds the optimal assignment vector $p$ that minimizes the normalized cut.
 
+> _note on the function $f(p)$ in linear algebra (from [this lecture by Prof. Strang](https://www.youtube.com/watch?v=xsP-S7yKaRA)):_  
+> This can be called the energy, in here $L$ is positive semi-definite, so $f(p)$ is always $\ge 0$(not sure), it has a bowl shape - looking like a loss function to minimize (as in gradient descent). Our aim here is to find the $p$ that minimizes $f$  - our optimization problem.   
+
 Then using Rayleigh's theorem, the eigenvector corresponding to the 2nd smallest eigenvalue $\lambda_2$ corresponds to the assignment vector, we can then split the values at 0 or apply k-means on this eigenvector(?)  
 
 
